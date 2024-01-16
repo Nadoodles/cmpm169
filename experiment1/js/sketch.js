@@ -1,9 +1,6 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
-
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+// Author: Jose Nadales
+// Date: 1/15/24
 
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
@@ -11,17 +8,36 @@ const VALUE1 = 1;
 const VALUE2 = 2;
 
 // Globals
-let myInstance;
+let particles = [];
 let canvasContainer;
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.diameter = random(20, 50); // Random diameter between 20 and 50 pixels
+        this.color = color(random(255), random(255), random(255)); // Random color
+        this.speedX = random(-2, 2); // Random horizontal speed
+        this.speedY = random(-2, 2); // Random vertical speed
     }
 
-    myMethod() {
-        // code to run when method is called
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > width || this.x < 0) {
+            this.speedX *= -1;
+        }
+
+        if (this.y > height || this.y < 0) {
+            this.speedY *= -1;
+        }
+    }
+
+    display() {
+        fill(this.color);
+        noStroke();
+        ellipse(this.x, this.y, this.diameter, this.diameter);
     }
 }
 
@@ -32,12 +48,12 @@ function setup() {
     let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
     canvas.parent("canvas-container");
     // resize canvas is the page is resized
-    $(window).resize(function() {
+    $(window).resize(function () {
         console.log("Resizing...");
         resizeCanvas(canvasContainer.width(), canvasContainer.height());
     });
     // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
+    myInstance = new MyProjectClass(VALUE1, VALUE2);
 
     var centerHorz = windowWidth / 2;
     var centerVert = windowHeight / 2;
@@ -45,23 +61,18 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    background(220);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+    // Display and update each particle
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].display();
+    }
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+    // Create a new particle at the mouse position
+    let newParticle = new Particle(mouseX, mouseY);
+    particles.push(newParticle);
 }
