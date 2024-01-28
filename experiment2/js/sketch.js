@@ -1,3 +1,13 @@
+// sketch.js - purpose and description here
+// Author: JOse Ndales
+// Date: 1/27/2024
+
+// Here is how you might set up an OOP p5.js project
+// Note that p5.js looks for a file called sketch.js
+
+// Constants - User-servicable parts
+// In a longer project I like to put these in a separate file
+
 // Constants - User-servicable parts
 const VALUE1 = 1;
 const VALUE2 = 2;
@@ -93,8 +103,8 @@ class Star {
 }
 
 function setup() {
-  let canvasWidth = 1300;
-  let canvasHeight = 1000;
+  let canvasWidth = 1650;
+  let canvasHeight = 800;
   let canvas = createCanvas(canvasWidth, canvasHeight);
 
   canvasContainer = $("#canvas-container");

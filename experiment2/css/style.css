@@ -17,16 +17,3 @@ body {
     width: 100%;
     height: 600px;
 }
-
-/* Increase font size for headings */
-h1 {
-    font-size: 4em; /* Adjust the value as needed */
-}
-
-h2 {
-    font-size: 2em; /* Adjust the value as needed */
-}
-
-p {
-    font-size: 1.5em;
-}
