@@ -1,67 +1,100 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
-
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+// Author: Jose Nadales
+// Date: 1/27/24
 
 // Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
 const VALUE1 = 1;
 const VALUE2 = 2;
 
 // Globals
-let myInstance;
 let canvasContainer;
+let angle = 90;
+let arts = [];
+let maxArts = 20;
+let lastSpawnFrame = 0;
+let designChangeInterval = 5000; // Time interval in milliseconds to change the design
+let lastDesignChangeTime = 0;
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
-
-// setup() function is called once when the program starts
 function setup() {
-    // place our canvas, making it fit our container
     canvasContainer = $("#canvas-container");
     let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
     canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
+
+    $(window).resize(function () {
         resizeCanvas(canvasContainer.width(), canvasContainer.height());
     });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
-
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    background(0);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+    // Check if it's time to spawn a new shape
+    if (frameCount - lastSpawnFrame >= 1 && arts.length < maxArts) {
+        arts.push({
+            x: random(width),
+            y: random(height),
+            angle: random(360),
+            resizeFactor: random(0.5, 1.5),
+            fillColor: color(random(255), random(255), random(255)), // Random color
+        });
+        lastSpawnFrame = frameCount;
+    }
+
+    // Check if it's time to change the design
+    if (millis() - lastDesignChangeTime >= designChangeInterval) {
+        changeDesign(); // Trigger design change
+        lastDesignChangeTime = millis(); // Update the last design change time
+    }
+
+    for (let j = 0; j < arts.length; j++) {
+        let currentArt = arts[j];
+
+        push();
+        translate(currentArt.x, currentArt.y);
+        rotate(radians(currentArt.angle));
+
+        // Draw the rotating lines with a different irregular pattern
+        for (let i = 0; i < 360; i += 10 + random(10)) {
+            rotate(radians(i));
+
+            let length = 200 * currentArt.resizeFactor * (1 + 0.5 * sin(radians(frameCount * 2)));
+
+            stroke(currentArt.fillColor);
+            strokeWeight(3);
+            line(length, 0, 0, length);
+        }
+        pop();
+    }
 }
+
+
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+    // Disperse lines outwards
+    for (let j = 0; j < arts.length; j++) {
+        let currentArt = arts[j];
+
+        currentArt.angle += random(360); // Randomly change the initial angle
+        currentArt.resizeFactor = random(0.5, 1.5); // Randomly change the resize factor
+    }
+}
+
+// Function to change the design
+function changeDesign() {
+    // Clear the existing shapes
+    arts = [];
+
+    // Add your new design logic here
+    // For example, draw random circles
+    for (let i = 0; i < 10; i++) {
+        let circleX = random(width);
+        let circleY = random(height);
+        let circleSize = random(50, 150);
+        let circleColor = color(random(255), random(255), random(255));
+
+        fill(circleColor);
+        noStroke();
+        ellipse(circleX, circleY, circleSize, circleSize);
+    }
 }
