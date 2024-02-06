@@ -40,7 +40,19 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(900, 800, WEBGL);
+
+  // place our canvas, making it fit our container
+  canvasContainer = $("#canvas-container");
+  let canvas = createCanvas(canvasContainer.width(), 800, WEBGL);
+  canvas.parent("canvas-container");
+  // resize canvas is the page is resized
+  $(window).resize(function() {
+      console.log("Resizing...");
+      resizeCanvas(canvasContainer.width(), 800, WEBGL);
+  });
+  // create an instance of the class
+  myInstance = new MyClass(VALUE1, VALUE2);
+  
   bg = loadImage("shpe.png");
   bg.resize(width, height);
   noStroke();
