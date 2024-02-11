@@ -32,6 +32,7 @@ function preload() {
     myModel = loadModel('Sheep.obj', true);
     textureImg = loadImage('sheep_texture.png');
     backgroundImage = loadImage('grass.jpeg');
+    sound = loadSound('goodnight.wav');
   }
 
 
@@ -56,6 +57,11 @@ function setup() {
 
 }
 
+// Global variables
+let sheepX = -40090;
+let sheepY = 0; // Initial y-coordinate for sheep
+
+
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
     background(0); // Black background color
@@ -65,25 +71,37 @@ function draw() {
     // Apply the texture
     texture(textureImg);
 
-    // Rotate the model upright
-    rotateX(PI); // Rotate around X-axis by 180 degrees to make it upright
-    rotateY(HALF_PI); // Rotate around Y-axis by 90 degrees
+    // Render multiple instances of the loaded model (sheep)
+    for (let i = 0; i < 100; i++) {
+        push(); // Save the current transformation state
+        translate(sheepX + (i * 400), sheepY + 400, 0); // Move each sheep horizontally and vertically centered
+        rotateX(PI); // Rotate around X-axis by 180 degrees to make it upright
+        rotateY(HALF_PI); // Rotate around Y-axis by 90 degrees
+        scale(1); // Scale the model
+        model(myModel); // Render the loaded model (sheep)
+        pop(); // Restore the previous transformation state
+    }
 
-    // Render the loaded model
-    scale(1); // Scale the model
-    model(myModel);
+    // Move the sheep to the right for the next frame
+    sheepX += 1;
+
+    sheepY = -200 + sin(frameCount * 0.05) * 200; // Adjust amplitude (100) as needed
 
     // Draw green rectangle at the bottom
-    fill(0, 255, 0); // Green fill color
+    //fill(0, 0, 0); // Green fill color
     noStroke(); // No outline
     rectMode(CENTER);
     let rectHeight = 50; // Adjust height as needed
     rect(width / 2, height - rectHeight / 2, width, rectHeight); // Draw the rectangle at the bottom
+
+    sphere(); 
 }
+
+
 
 
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+    sound.play();
 }
