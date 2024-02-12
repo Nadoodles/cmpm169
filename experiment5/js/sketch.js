@@ -33,6 +33,7 @@ function preload() {
     textureImg = loadImage('sheep_texture.png');
     backgroundImage = loadImage('grass.jpeg');
     sound = loadSound('goodnight.wav');
+    moonImg = loadImage('moon.png');
   }
 
 
@@ -64,6 +65,8 @@ let sheepY = 0; // Initial y-coordinate for sheep
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
+    noStroke(); // No outline
+
     background(0); // Black background color
 
     image(backgroundImage, -825, -500, canvasContainer.width(), 1000);
@@ -87,14 +90,14 @@ function draw() {
 
     sheepY = -200 + sin(frameCount * 0.05) * 200; // Adjust amplitude (100) as needed
 
-    // Draw green rectangle at the bottom
-    //fill(0, 0, 0); // Green fill color
-    noStroke(); // No outline
-    rectMode(CENTER);
-    let rectHeight = 50; // Adjust height as needed
-    rect(width / 2, height - rectHeight / 2, width, rectHeight); // Draw the rectangle at the bottom
-
-    sphere(); 
+    push(); // Save the current transformation state
+    translate(650, -370, 0); // Move to the top-left corner of the canvas
+    rotateX(frameCount * 0.01); // Rotate around X-axis
+    rotateY(frameCount * 0.01); // Rotate around Y-axis
+    rotateZ(frameCount * 0.01); // Rotate around Z-axis
+    texture(moonImg); // Apply texture
+    sphere(100); // Draw the sphere with a radius of 100
+    pop(); // Restore the previous transformation state
 }
 
 
