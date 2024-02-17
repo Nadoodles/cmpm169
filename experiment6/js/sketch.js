@@ -2,9 +2,6 @@
 // Author: Jose Nadales
 // Date: 2/162/24
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
-
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
 const VALUE1 = 1;
@@ -33,12 +30,15 @@ let kerning = 0.5; // between letters
 
 let fontSizeStatic = false;
 let blackAndWhite = false;
+let images = []; // Array to hold all the images
+let currentImageIndex = 0;
 
 function preload() {
-    // Load your .webp file
-    img = loadImage('gojo.webp');
-  }
-  
+    // Load your images
+    images.push(loadImage('gojo.webp'));
+    images.push(loadImage('luffy.jpeg'));
+    images.push(loadImage('naruto.jpeg'));
+}
 
 // setup() function is called once when the program starts
 function setup() {
@@ -57,9 +57,7 @@ function setup() {
     textFont('Times');
     textSize(10);
     textAlign(LEFT, CENTER);
-    print(img.width + ' • ' + img.height);
-
-
+    print(images[currentImageIndex].width + ' • ' + images[currentImageIndex].height);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
@@ -72,33 +70,33 @@ function draw() {
 
     while (y < height) {
         // translate position (display) to position (image)
-        img.loadPixels();
+        images[currentImageIndex].loadPixels();
         // get current color
-        var imgX = round(map(x, 0, width, 0, img.width));
-        var imgY = round(map(y, 0, height, 0, img.height));
-        var c = color(img.get(imgX, imgY));
+        var imgX = round(map(x, 0, width, 0, images[currentImageIndex].width));
+        var imgY = round(map(y, 0, height, 0, images[currentImageIndex].height));
+        var c = color(images[currentImageIndex].get(imgX, imgY));
         var greyscale = round(red(c) * 0.222 + green(c) * 0.707 + blue(c) * 0.071);
 
         push();
         translate(x, y);
 
         if (fontSizeStatic) {
-        textSize(fontSizeMax);
-        if (blackAndWhite) {
-            fill(greyscale);
+            textSize(fontSizeMax);
+            if (blackAndWhite) {
+                fill(greyscale);
+            } else {
+                fill(c);
+            }
         } else {
-            fill(c);
-        }
-        } else {
-        // greyscale to fontsize
-        var fontSize = map(greyscale, 0, 255, fontSizeMax, fontSizeMin);
-        fontSize = max(fontSize, 1);
-        textSize(fontSize);
-        if (blackAndWhite) {
-            fill(0);
-        } else {
-            fill(c);
-        }
+            // greyscale to fontsize
+            var fontSize = map(greyscale, 0, 255, fontSizeMax, fontSizeMin);
+            fontSize = max(fontSize, 1);
+            textSize(fontSize);
+            if (blackAndWhite) {
+                fill(0);
+            } else {
+                fill(c);
+            }
         }
 
         var letter = inputText.charAt(counter);
@@ -111,27 +109,27 @@ function draw() {
 
         // linebreaks
         if (x + letterWidth >= width) {
-        x = 0;
-        y += spacing;
+            x = 0;
+            y += spacing;
         }
 
         counter++;
         if (counter >= inputText.length) {
-        counter = 0;
+            counter = 0;
         }
     }
     noLoop();
 }
 
 function keyReleased() {
-  if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
-  // change render mode
-  if (key == '1') fontSizeStatic = !fontSizeStatic;
-  // change color style
-  if (key == '2') blackAndWhite = !blackAndWhite;
-  print('fontSizeMin: ' + fontSizeMin + ', fontSizeMax: ' + fontSizeMax + ', fontSizeStatic: ' + fontSizeStatic + ', blackAndWhite: ' + blackAndWhite);
-  loop();
-
+    if (key == 's' || key == 'S') {
+        saveCanvas(gd.timestamp(), 'png');
+    } else if (key >= '0' && key <= '2') {
+        // Switch to the image corresponding to the key pressed
+        currentImageIndex = int(key);
+        // Ensure the index is within bounds
+        currentImageIndex = constrain(currentImageIndex, 0, images.length - 1);
+    }
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
